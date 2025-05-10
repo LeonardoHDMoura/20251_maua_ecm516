@@ -29,7 +29,7 @@ app.get('/lembretes/:idLembrete/observacoes', function(req,res){
 })
 
 //POST /lembretes/1/observacoes
-app.post('/lembretes/:idLembrete/observacoes', function(req,res){
+app.post('/lembretes/:idLembrete/observacoes', async (req,res) => {
     const idObservacao = uuidv4()
     const { texto } = req.body
     const { idLembrete } = req.params
@@ -41,8 +41,20 @@ app.post('/lembretes/:idLembrete/observacoes', function(req,res){
     const observacoes = baseObservacoes[idLembrete] || []
     observacoes.push(observacao)
     baseObservacoes[idLembrete] = observacoes
+    await axios.post(`http://${urlBase}:${portBarramento}/eventos`, {
+        tipo: "ObservacaoCriada",
+        dados: observacao
+    })
     res.status(201).json(observacoes)
 })
+
+//POST /eventos
+app.post('/eventos', (req,res) => {
+    const evento = req.body
+    console.log(evento)
+    res.end()
+})
+
 
 const port = 5000
 app.listen(port, () => {
