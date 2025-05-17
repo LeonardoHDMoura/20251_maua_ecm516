@@ -34,6 +34,7 @@ const funcoes = {
         baseConsolidada[observacao.idLembrete]['observacoes'] = observacoes
     }
 }
+
 app.get('/lembretes', (req,res) => {
     res.json(baseConsolidada)
 })

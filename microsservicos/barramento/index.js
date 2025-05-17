@@ -5,6 +5,7 @@ const urlBase = "localhost"
 const portLembretes = "4000"
 const portObservacoes = "5000"
 const portConsulta = "6000"
+const portClassificacao = "7000"
 app.use(express.json())
 
 app.post('/eventos', async (req,res) =>{
@@ -26,6 +27,12 @@ app.post('/eventos', async (req,res) =>{
     }
     try{
         await axios.post(`http://${urlBase}:${portConsulta}/eventos`, evento)
+    }
+    catch(e){
+        console.log(e)
+    }
+    try{
+        await axios.post(`http://${urlBase}:${portClassificacao}/eventos`, evento)
     }
     catch(e){
         console.log(e)

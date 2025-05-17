@@ -11,7 +11,8 @@ app.use(express.json())
         {
             id: 1001,
             idLembrete: 1,
-            texto: "Sem açúcar"
+            texto: "Sem açúcar",
+            status: 'aguardando'
         },
         {
             id: 1002, idLembrete: 1, texto: "Comprar o pó"
@@ -21,6 +22,19 @@ app.use(express.json())
 }
 */
 const baseObservacoes = {}
+
+const funcoes = {
+    ObservacaoClassificada: async (observacao) => {
+        final = baseObservacoes[observacao.idLembrete].findIndex((obs) => {
+            obs.id = observacao.id
+        })
+        final.status = observacao.status
+        await axios.post(`http://${urlBase}:${portBarramento}/eventos`, {
+        tipo: "ObservacaoAtualizada",
+        dados: observacao
+    })
+    }
+}
 
 //GET /lembretes/1/observacoes
 app.get('/lembretes/:idLembrete/observacoes', function(req,res){
@@ -36,7 +50,8 @@ app.post('/lembretes/:idLembrete/observacoes', async (req,res) => {
     const observacao = {
         id: idObservacao,
         texto: texto,
-        idLembrete: idLembrete
+        idLembrete: idLembrete,
+        status: 'aguardando'
     }
     const observacoes = baseObservacoes[idLembrete] || []
     observacoes.push(observacao)
@@ -49,10 +64,15 @@ app.post('/lembretes/:idLembrete/observacoes', async (req,res) => {
 })
 
 //POST /eventos
-app.post('/eventos', (req,res) => {
-    const evento = req.body
-    console.log(evento)
-    res.end()
+app.post('/eventos', async (req,res) => {
+    try{
+        const evento = req.body
+        console.log(evento)
+        await funcoes[evento.tipo](evento.dados)
+    }
+    finally{
+        res.end()
+    }
 })
 
 
