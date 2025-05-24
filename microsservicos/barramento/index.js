@@ -8,11 +8,12 @@ const portConsulta = "6000"
 const portClassificacao = "7000"
 app.use(express.json())
 
+const baseEventos = []
 app.post('/eventos', async (req,res) =>{
     //1. pegar o evento
     const evento = req.body
     console.log(evento)
-
+    baseEventos.push(evento)
     try{
         await axios.post(`http://${urlBase}:${portLembretes}/eventos`, evento)
     }
@@ -39,6 +40,10 @@ app.post('/eventos', async (req,res) =>{
     }
 
     res.end()
+})
+
+app.get('/eventos', (req,res) =>{
+    res.json(baseEventos)
 })
 
 const port = 10000

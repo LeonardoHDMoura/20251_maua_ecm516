@@ -31,12 +31,9 @@ const palavraChave = "importante"
 
 const funcoes = {
     ObservacaoCriada: async (observacao) => {
-        if(palavraChave in observacao.texto){
-            observacao.status = "importante"
-        }
-        else{
-            observacao.status = "comum"
-        }
+        observacao.status = observacao.texto.includes(palavraChave)
+        ? "importante"
+        : "comum"
         await axios.post(`http://${urlBase}:${portBarramento}/eventos`, {
             tipo: 'ObservacaoClassificada',
             dados: observacao
@@ -49,6 +46,9 @@ app.post('/eventos', async function(req, res){
         const evento = req.body
         console.log(evento)
         await funcoes[evento.tipo](evento.dados)
+    }
+    catch(e){
+        console.log(e)
     }
     finally{
         res.end()

@@ -26,7 +26,7 @@ const baseObservacoes = {}
 const funcoes = {
     ObservacaoClassificada: async (observacao) => {
         final = baseObservacoes[observacao.idLembrete].findIndex((obs) => {
-            obs.id = observacao.id
+            return obs.id = observacao.id
         })
         final.status = observacao.status
         await axios.post(`http://${urlBase}:${portBarramento}/eventos`, {
@@ -69,6 +69,9 @@ app.post('/eventos', async (req,res) => {
         const evento = req.body
         console.log(evento)
         await funcoes[evento.tipo](evento.dados)
+    }
+    catch(e){
+        console.log(e)
     }
     finally{
         res.end()
