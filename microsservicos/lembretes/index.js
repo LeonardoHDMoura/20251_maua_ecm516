@@ -1,7 +1,7 @@
 const axios = require('axios')
 const express = require('express')
 const app = express()
-const urlBase = "localhost"
+const urlBase = "host.docker.internal"
 const portBarramento = "10000"
 app.use(express.json())
 /*

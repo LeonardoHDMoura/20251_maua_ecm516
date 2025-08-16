@@ -3,7 +3,7 @@ const express = require('express')
 const app = express()
 app.use(express.json())
 const portBarramento = '10000'
-const urlBase = 'localhost'
+const urlBase = 'host.docker.internal'
 
 /*
 {
