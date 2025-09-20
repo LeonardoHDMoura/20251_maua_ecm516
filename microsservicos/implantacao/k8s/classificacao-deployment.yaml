@@ -1,20 +1,20 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: ecm516-lembretes-deployment
+  name: ecm516-classificacao-deployment
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: lembretes
+      app: classificacao
   template:
     metadata:
       labels:
-        app: lembretes
+        app: classificacao
     spec:
       containers:
-        - name: lembretes
-          image: quazmo/ecm516-lembretes
+        - name: classificacao
+          image: quazmo/ecm516-classificacao
           resources:
             limits:
               memory: 256Mi
@@ -26,12 +26,12 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: ecm516-lembretes-clusterip-service
+  name: ecm516-classificacao-clusterip-service
 spec:
   selector:
-    app: lembretes
+    app: classificacao
   ports:
-    - name: lembretes
+    - name: classificacao
       protocol: TCP
-      port: 4000
-      targetPort: 4000
+      port: 7000
+      targetPort: 7000

@@ -1,7 +1,6 @@
 const axios = require('axios')
 const express = require('express')
 const app = express()
-const urlBase = "host.docker.internal"
 const portLembretes = "4000"
 const portObservacoes = "5000"
 const portConsulta = "6000"
@@ -15,25 +14,26 @@ app.post('/eventos', async (req,res) =>{
     console.log(evento)
     baseEventos.push(evento)
     try{
-        await axios.post(`http://${urlBase}:${portLembretes}/eventos`, evento)
+        //await axios.post(`http://${urlBase}:${portLembretes}/eventos`, evento)
+        await axios.post(`http://ecm516-lembretes-clusterip-service:${portLembretes}/eventos`, evento)
     }
     catch(e){
         console.log(e)
     }
     try{
-        await axios.post(`http://${urlBase}:${portObservacoes}/eventos`, evento)
+        await axios.post(`http://ecm516-observacoes-clusterip-service:${portObservacoes}/eventos`, evento)
     }
     catch(e){
         console.log(e)
     }
     try{
-        await axios.post(`http://${urlBase}:${portConsulta}/eventos`, evento)
+        await axios.post(`http://ecm516-consulta-clusterip-service:${portConsulta}/eventos`, evento)
     }
     catch(e){
         console.log(e)
     }
     try{
-        await axios.post(`http://${urlBase}:${portClassificacao}/eventos`, evento)
+        await axios.post(`http://ecm516-classificacao-clusterip-service:${portClassificacao}/eventos`, evento)
     }
     catch(e){
         console.log(e)

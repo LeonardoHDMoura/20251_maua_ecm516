@@ -1,20 +1,20 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: ecm516-lembretes-deployment
+  name: ecm516-consulta-deployment
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: lembretes
+      app: consulta
   template:
     metadata:
       labels:
-        app: lembretes
+        app: consulta
     spec:
       containers:
-        - name: lembretes
-          image: quazmo/ecm516-lembretes
+        - name: consulta
+          image: quazmo/ecm516-consulta
           resources:
             limits:
               memory: 256Mi
@@ -26,12 +26,12 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: ecm516-lembretes-clusterip-service
+  name: ecm516-consulta-clusterip-service
 spec:
   selector:
-    app: lembretes
+    app: consulta
   ports:
-    - name: lembretes
+    - name: consulta
       protocol: TCP
-      port: 4000
-      targetPort: 4000
+      port: 6000
+      targetPort: 6000
