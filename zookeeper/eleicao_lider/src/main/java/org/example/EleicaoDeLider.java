@@ -1,21 +1,24 @@
 package org.example;
 
-import org.apache.zookeeper.KeeperException;
-import org.apache.zookeeper.WatchedEvent;
-import org.apache.zookeeper.Watcher;
-import org.apache.zookeeper.ZooKeeper;
+import org.apache.zookeeper.*;
 
 import java.io.IOException;
+import java.util.Collections;
+import java.util.List;
 
 public class EleicaoDeLider {
-    private static final String HOST = "localhost";
+    private static final String HOST = "10.2.131.164";
     private static final String PORTA = "2181";
     private static final int TIMEOUT = 5000;
     private ZooKeeper zooKeeper;
+    private static final String NAMESPACE_ELEICAO = "/eleicao";
+    private String nomeDoZNodeDesseProcesso;
     public static void main(String[] args) throws Exception {
         System.out.printf("Método main executando na thread %s\n", Thread.currentThread().getName());
         var eleicaoDeLider = new EleicaoDeLider();
         eleicaoDeLider.conectar();
+        eleicaoDeLider.realizarCandidatura();
+        eleicaoDeLider.elegerOLider();
         eleicaoDeLider.executar();
         eleicaoDeLider.fechar();
 //        Thread.sleep(1000);
@@ -54,5 +57,38 @@ public class EleicaoDeLider {
 
     public void fechar() throws Exception {
         zooKeeper.close();
+    }
+
+    public void realizarCandidatura() throws InterruptedException, KeeperException{
+        // /eleicao/cand_
+        var prefixo = String.format("%s/cand_",NAMESPACE_ELEICAO);
+        var pathInteiro = zooKeeper.create(
+                prefixo,
+                new byte[]{},
+                ZooDefs.Ids.OPEN_ACL_UNSAFE,
+                CreateMode.EPHEMERAL_SEQUENTIAL
+        );
+        System.out.println("Candidatura " + pathInteiro);
+        this.nomeDoZNodeDesseProcesso = pathInteiro.replace(
+                String.format("%s/",NAMESPACE_ELEICAO),
+                ""
+        );
+
+    }
+
+    public void elegerOLider() throws Exception {
+        List<String> candidatos = zooKeeper.getChildren(NAMESPACE_ELEICAO, false);
+        Collections.sort(candidatos);
+        var oMenor = candidatos.get(0);
+        if(nomeDoZNodeDesseProcesso.equals(oMenor)){
+            System.out.printf("Me chamo %s e sou o líder\n", nomeDoZNodeDesseProcesso);
+        }
+        else{
+            System.out.printf("Me chamo %s e não sou o líder. O líder é o %s\n",
+                    nomeDoZNodeDesseProcesso,
+                    oMenor
+            );
+        }
+
     }
 }
